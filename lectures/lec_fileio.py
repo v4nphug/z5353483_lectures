@@ -201,20 +201,17 @@ def safe_open(pth, mode):
         How to open the file. Typically 'w' for writing, 'r' for reading, 
         and 'a' for appending. See the `open` function for more options.
     """
-        with open(pth) as file:
-        for i, line in enumerate(file):
-            print(f"line {i}: '{line.rstrip()}'")
+    try:
+        # Check if the file exists and is not empty when opening in write mode
+        if mode == 'w' and os.path.isfile(pth) and os.path.getsize(pth) > 0:
+            raise FileExistsError(f"The file at '{pth}' already exists and is not empty. Refusing to overwrite.")
 
+        # Open the file with the specified mode
+        file_object = open(pth, mode)
 
-with open(DSTFILE, mode='w') as file:
-   file.write('This is a line\n')
-   file.write('This is a another line')
-print_lines_rstrip(DSTFILE)
-
-
-
-
-
-
+        return file_object
+    except Exception as e:
+        print(f"Error: {e}")
+        return None
 
 
